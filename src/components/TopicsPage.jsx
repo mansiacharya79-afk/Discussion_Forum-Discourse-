@@ -1,8 +1,4 @@
-function TopicCard({ topic, index, isAdmin, currentUser, onOpen, onDeleteTopic }) {
-  const isOwner =
-    !!currentUser && currentUser.id != null && topic.user?.id != null && Number(currentUser.id) === Number(topic.user.id)
-  const canDelete = isAdmin || isOwner
-
+function TopicCard({ topic, index, isAdmin, onOpen, onDeleteTopic }) {
   return (
     <div
       className="topic-item"
@@ -15,18 +11,7 @@ function TopicCard({ topic, index, isAdmin, currentUser, onOpen, onDeleteTopic }
           <div className="t-desc">{topic.description}</div>
         </div>
         <div className="flex items-center">
-          {canDelete && (
-            <button
-              className="btn-del"
-              onClick={() => {
-                if (window.confirm('Are you sure you want to delete this topic?')) {
-                  onDeleteTopic(topic.id)
-                }
-              }}
-            >
-              Del
-            </button>
-          )}
+          {isAdmin && <button className="btn-del" onClick={() => onDeleteTopic(topic.id)}>Del</button>}
           <div className="t-chev ml-3 mt-0.5 text-xl" onClick={() => onOpen(topic)}>›</div>
         </div>
       </div>
@@ -42,7 +27,6 @@ export default function TopicsPage({
   onCreateTopic,
   topics,
   isAdmin,
-  currentUser,
   onOpenTopic,
   onDeleteTopic,
 }) {
@@ -92,7 +76,6 @@ export default function TopicsPage({
               topic={topic}
               index={index}
               isAdmin={isAdmin}
-              currentUser={currentUser}
               onOpen={onOpenTopic}
               onDeleteTopic={onDeleteTopic}
             />

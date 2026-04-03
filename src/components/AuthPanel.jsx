@@ -12,7 +12,7 @@ export default function AuthPanel({
 }) {
   return (
     <div className="auth-scene flex min-h-screen items-center justify-center p-6">
-      <div className="auth-box w-full max-w-[430px] p-[48px_40px]">
+      <div className="auth-box w-full max-w-[430px] rounded-[28px] border border-white/10 bg-[rgba(12,10,30,0.65)] p-[48px_40px]">
         <div className="auth-brand">✦ Discourse</div>
         <p className="auth-sub">where ideas travel at the speed of thought</p>
         <div className="tabs mb-7 flex gap-1 rounded-[14px] border border-white/10 bg-white/5 p-1">
@@ -59,7 +59,7 @@ export default function AuthPanel({
           />
 
           <button
-            className="btn-main w-full p-3.5 text-[15px] font-bold text-white"
+            className="btn-main w-full rounded-[13px] border-0 bg-gradient-to-br from-violet-600 via-indigo-700 to-cyan-700 p-3.5 text-[15px] font-bold text-white"
             onClick={onSubmit}
           >
             {page === 'register' ? 'Create Account →' : 'Sign In →'}

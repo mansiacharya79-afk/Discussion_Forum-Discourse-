@@ -29,7 +29,6 @@ export default function App() {
 
   const isAdmin = loggedInUser?.role === 'ADMIN'
   const initials = (name) => (name ? name.slice(0, 2).toUpperCase() : '??')
-  const sortByNewestId = (items) => [...items].sort((a, b) => Number(b?.id || 0) - Number(a?.id || 0))
 
   const slugify = (value) =>
     String(value || '')
@@ -39,15 +38,12 @@ export default function App() {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
 
-  const loadTopics = () =>
-    fetch('http://localhost:8081/api/topics')
-      .then((r) => r.json())
-      .then((data) => setTopics(sortByNewestId(data)))
+  const loadTopics = () => fetch('http://localhost:8081/api/topics').then((r) => r.json()).then(setTopics)
 
   const fetchPostsByTopicId = (topicId) =>
     fetch('http://localhost:8081/api/posts')
       .then((r) => r.json())
-      .then((data) => setPosts(sortByNewestId(data.filter((p) => p.topic?.id === topicId))))
+      .then((data) => setPosts(data.filter((p) => p.topic?.id === topicId)))
 
   const handleRegister = () =>
     fetch('http://localhost:8081/api/users', {
@@ -119,12 +115,7 @@ export default function App() {
   const loadComments = (postId) =>
     fetch('http://localhost:8081/api/comments')
       .then((r) => r.json())
-      .then((data) =>
-        setComments((prev) => ({
-          ...prev,
-          [postId]: sortByNewestId(data.filter((c) => c.post?.id === postId)),
-        }))
-      )
+      .then((data) => setComments((prev) => ({ ...prev, [postId]: data.filter((c) => c.post?.id === postId) })))
 
   const handleAddComment = (post) => {
     const text = commentText[post.id]
@@ -167,7 +158,7 @@ export default function App() {
       if (!topic) {
         const fetchedTopics = await fetch('http://localhost:8081/api/topics').then((r) => r.json())
         if (cancelled) return
-        setTopics(sortByNewestId(fetchedTopics))
+        setTopics(fetchedTopics)
         topic = fetchedTopics.find((t) => t.id === routeTopicId)
       }
 
@@ -250,6 +241,21 @@ export default function App() {
                     isAdmin={isAdmin}
                     initials={initials}
                     onLogout={handleLogout}
+                    onPostsPage={() => {
+                      if (selectedTopic) {
+                        navigate(`/topics/${selectedTopic.id}/${slugify(selectedTopic.title)}`)
+                      } else {
+                        navigate('/topics')
+                      }
+                    }}
+                    onTopicPage={() => navigate('/topics')}
+                    onRegisterPage={() => {
+                      setLoggedInUser(null)
+                      setSelectedTopic(null)
+                      setPosts([])
+                      navigate('/register')
+                    }}
+                    currentView="topics"
                     showAdmin={true}
                   />
                   <TopicsPage
@@ -260,7 +266,6 @@ export default function App() {
                     onCreateTopic={handleCreateTopic}
                     topics={topics}
                     isAdmin={isAdmin}
-                    currentUser={loggedInUser}
                     onOpenTopic={openTopicRoute}
                     onDeleteTopic={handleDeleteTopic}
                   />
@@ -281,6 +286,21 @@ export default function App() {
                     isAdmin={isAdmin}
                     initials={initials}
                     onLogout={handleLogout}
+                    onPostsPage={() => {
+                      if (selectedTopic) {
+                        navigate(`/topics/${selectedTopic.id}/${slugify(selectedTopic.title)}`)
+                      } else {
+                        navigate('/topics')
+                      }
+                    }}
+                    onTopicPage={() => navigate('/topics')}
+                    onRegisterPage={() => {
+                      setLoggedInUser(null)
+                      setSelectedTopic(null)
+                      setPosts([])
+                      navigate('/register')
+                    }}
+                    currentView="posts"
                     showAdmin={false}
                   />
                   <PostsPage
@@ -290,7 +310,6 @@ export default function App() {
                     onCreatePost={handleCreatePost}
                     posts={posts}
                     isAdmin={isAdmin}
-                    currentUser={loggedInUser}
                     initials={initials}
                     onDeletePost={handleDeletePost}
                     onLoadComments={loadComments}
@@ -299,10 +318,6 @@ export default function App() {
                     setCommentText={setCommentText}
                     onAddComment={handleAddComment}
                     onDeleteComment={handleDeleteComment}
-                    onBack={() => {
-                      navigate('/topics')
-                      loadTopics()
-                    }}
                   />
                 </>
               ) : (

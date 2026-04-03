@@ -2,7 +2,6 @@ function PostCard({
   post,
   index,
   isAdmin,
-  currentUser,
   initials,
   onDeletePost,
   onLoadComments,
@@ -12,10 +11,6 @@ function PostCard({
   onAddComment,
   onDeleteComment,
 }) {
-  const isOwner =
-    !!currentUser && currentUser.id != null && post.user?.id != null && Number(currentUser.id) === Number(post.user.id)
-  const canDeletePost = isAdmin || isOwner
-
   return (
     <div
       className="post-item"
@@ -23,18 +18,7 @@ function PostCard({
     >
       <div className="p-top">
         <div className="p-who"><div className="p-av">{initials(post.user?.username)}</div>{post.user?.username}</div>
-        {canDeletePost && (
-          <button
-            className="btn-del"
-            onClick={() => {
-              if (window.confirm('Are you sure you want to delete this post?')) {
-                onDeletePost(post.id)
-              }
-            }}
-          >
-            Delete
-          </button>
-        )}
+        {isAdmin && <button className="btn-del" onClick={() => onDeletePost(post.id)}>Delete</button>}
       </div>
 
       <p className="p-body">{post.content}</p>
@@ -82,7 +66,6 @@ export default function PostsPage({
   onCreatePost,
   posts,
   isAdmin,
-  currentUser,
   initials,
   onDeletePost,
   onLoadComments,
@@ -91,12 +74,9 @@ export default function PostsPage({
   setCommentText,
   onAddComment,
   onDeleteComment,
-  onBack,
 }) {
   return (
     <div className="wrap mx-auto max-w-[860px] px-6 pb-[100px] pt-11">
-      <button className="btn-back" onClick={onBack}>← Topics</button>
-
       <div className="pg-head">
         <div className="pg-title">{selectedTopic?.title}</div>
         <p className="pg-sub">{selectedTopic?.description}</p>
@@ -130,7 +110,6 @@ export default function PostsPage({
               post={post}
               index={index}
               isAdmin={isAdmin}
-              currentUser={currentUser}
               initials={initials}
               onDeletePost={onDeletePost}
               onLoadComments={onLoadComments}
