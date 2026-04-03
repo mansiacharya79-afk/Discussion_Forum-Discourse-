@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useMatch, useNavigate } from 'react-router-dom'
-import './App.css'
 import AuthPanel from './components/AuthPanel'
 import CosmicBackground from './components/CosmicBackground'
 import Particles from './components/Particles'
@@ -38,12 +37,21 @@ export default function App() {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
 
-  const loadTopics = () => fetch('http://localhost:8081/api/topics').then((r) => r.json()).then(setTopics)
+  const recentFirst = (items) => {
+    return [...items].sort((a, b) => {
+      const timeA = new Date(a.createdAt || a.updatedAt || 0).getTime()
+      const timeB = new Date(b.createdAt || b.updatedAt || 0).getTime()
+      if (timeB !== timeA) return timeB - timeA
+      return (b.id || 0) - (a.id || 0)
+    })
+  }
+
+  const loadTopics = () => fetch('http://localhost:8081/api/topics').then((r) => r.json()).then(data => setTopics(recentFirst(data)))
 
   const fetchPostsByTopicId = (topicId) =>
     fetch('http://localhost:8081/api/posts')
       .then((r) => r.json())
-      .then((data) => setPosts(data.filter((p) => p.topic?.id === topicId)))
+      .then((data) => setPosts(recentFirst(data.filter((p) => p.topic?.id === topicId))))
 
   const handleRegister = () =>
     fetch('http://localhost:8081/api/users', {
@@ -183,7 +191,7 @@ export default function App() {
       <CosmicBackground />
       <Particles />
 
-      <div className="z2 relative z-[2]">
+      <div className="z2">
         <Routes>
           <Route path="/" element={<Navigate to={loggedInUser ? '/topics' : '/register'} replace />} />
 

@@ -18,7 +18,14 @@ function PostCard({
     >
       <div className="p-top">
         <div className="p-who"><div className="p-av">{initials(post.user?.username)}</div>{post.user?.username}</div>
-        {isAdmin && <button className="btn-del" onClick={() => onDeletePost(post.id)}>Delete</button>}
+        {isAdmin && (
+          <button
+            className="btn-del"
+            onClick={() => onDeletePost(post.id)}
+          >
+            Delete
+          </button>
+        )}
       </div>
 
       <p className="p-body">{post.content}</p>
@@ -28,7 +35,7 @@ function PostCard({
       {comments[post.id] && (
         <div className="cmt-list">
           {comments[post.id].length === 0 ? (
-            <p className="text-[13px] text-[var(--muted)]">No comments yet.</p>
+            <p className="text-[13px] text-[#4f5a74]">No comments yet.</p>
           ) : (
             comments[post.id].map((comment) => (
               <div key={comment.id} className="cmt">
@@ -45,9 +52,9 @@ function PostCard({
         </div>
       )}
 
-      <div className="cmt-row flex gap-2.5">
+      <div className="cmt-row">
         <input
-          className="cmt-inp flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] text-slate-50 outline-none"
+          className="cmt-inp"
           type="text"
           placeholder="Add a comment…"
           value={commentText[post.id] || ''}
@@ -76,7 +83,7 @@ export default function PostsPage({
   onDeleteComment,
 }) {
   return (
-    <div className="wrap mx-auto max-w-[860px] px-6 pb-[100px] pt-11">
+    <div className="wrap">
       <div className="pg-head">
         <div className="pg-title">{selectedTopic?.title}</div>
         <p className="pg-sub">{selectedTopic?.description}</p>
@@ -85,7 +92,7 @@ export default function PostsPage({
       <div className="glass-card mb-7 p-7">
         <div className="card-lbl">Write a Post</div>
         <textarea
-          className="ta mb-2 w-full resize-none rounded-[13px] border border-white/10 bg-white/5 px-4 py-[13px] text-sm text-slate-50 outline-none"
+          className="ta mb-2"
           style={{ height: 100 }}
           placeholder="Share something worth reading…"
           value={postContent}
@@ -102,7 +109,9 @@ export default function PostsPage({
 
       <div className="list flex flex-col gap-3">
         {posts.length === 0 ? (
-          <div className="empty"><div className="empty-icon">✍️</div>No posts yet. Start the conversation!</div>
+          <div className="empty"><div className="empty-icon">✍️</div>
+            No posts yet. Start the conversation!
+          </div>
         ) : (
           posts.map((post, index) => (
             <PostCard

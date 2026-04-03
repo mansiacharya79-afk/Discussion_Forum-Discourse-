@@ -11,7 +11,14 @@ function TopicCard({ topic, index, isAdmin, onOpen, onDeleteTopic }) {
           <div className="t-desc">{topic.description}</div>
         </div>
         <div className="flex items-center">
-          {isAdmin && <button className="btn-del" onClick={() => onDeleteTopic(topic.id)}>Del</button>}
+          {isAdmin && (
+            <button
+              className="btn-del"
+              onClick={() => onDeleteTopic(topic.id)}
+            >
+              Del
+            </button>
+          )}
           <div className="t-chev ml-3 mt-0.5 text-xl" onClick={() => onOpen(topic)}>›</div>
         </div>
       </div>
@@ -31,7 +38,7 @@ export default function TopicsPage({
   onDeleteTopic,
 }) {
   return (
-    <div className="wrap mx-auto max-w-[860px] px-6 pb-[100px] pt-11">
+    <div className="wrap">
       <div className="pg-head">
         <div className="pg-title">Explore Topics</div>
         <p className="pg-sub">Join a discussion or spark a new one</p>
@@ -39,16 +46,16 @@ export default function TopicsPage({
 
       <div className="glass-card mb-7 p-7">
         <div className="card-lbl">New Topic</div>
-        <div className="fields flex flex-col gap-[13px]">
+        <div className="fields">
           <input
-            className="inp w-full rounded-[13px] border border-white/10 bg-white/5 px-4 py-[13px] text-sm text-slate-50 outline-none"
+            className="inp"
             type="text"
             placeholder="What's this topic about?"
             value={topicTitle}
             onChange={(e) => setTopicTitle(e.target.value)}
           />
           <textarea
-            className="ta mb-2 w-full resize-none rounded-[13px] border border-white/10 bg-white/5 px-4 py-[13px] text-sm text-slate-50 outline-none"
+            className="ta mb-2"
             style={{ height: 85 }}
             placeholder="Give it some context…"
             value={topicDescription}
@@ -68,7 +75,9 @@ export default function TopicsPage({
 
       <div className="list flex flex-col gap-3">
         {topics.length === 0 ? (
-          <div className="empty"><div className="empty-icon">🌌</div>No topics yet — be the first explorer!</div>
+          <div className="empty"><div className="empty-icon">🌌</div>
+            No topics yet — be the first explorer!
+          </div>
         ) : (
           topics.map((topic, index) => (
             <TopicCard
